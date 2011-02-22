@@ -384,6 +384,8 @@ function exit() {
         if [ "$1" = "now" ]
         then
             builtin exit
+        else
+            echo "Please use 'exit now' if you want to leave this session!"
         fi
     fi
 }
