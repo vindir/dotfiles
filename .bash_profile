@@ -15,21 +15,6 @@ if [ -f ~/.mac_bashprofile ]; then
    source ~/.mac_bashprofile
 fi
 
-# Whimsical MOTD ---------------------------------------------------------------
-# Display fortune at login
-if [ -x /usr/games/fortune ]
-then
-	echo ""
-	/usr/games/fortune -s
-	echo ""
-fi
-#Display the Discordian/Erisian date for the day
-if [ -x /usr/bin/ddate ]
-then
-	/usr/bin/ddate
-fi
-
-
 # Color Handling ---------------------------------------------------------------
 if [ $OS != "Darwin" ] ; then
     eval `dircolors -b` # set the basis for our LS_COLORS
@@ -99,12 +84,12 @@ alias ...='cd .. ; cd ..'
 #    You can subsequently move to one of the saved directories by using cd with
 #    the abbreviation you chose. Eg. cd ms  (Note that no '$' is necessary.)
 if [ ! -f ~/.dirs ]; then  # if doesn't exist, create it
-	touch ~/.dirs
+    touch ~/.dirs
 fi
 
 alias show='cat ~/.dirs'
 save (){
-	command sed "/!$/d" ~/.dirs > ~/.dirs1; \mv ~/.dirs1 ~/.dirs; echo "$@"=\"`pwd`\" >> ~/.dirs; source ~/.dirs ; 
+    command sed "/!$/d" ~/.dirs > ~/.dirs1; \mv ~/.dirs1 ~/.dirs; echo "$@"=\"`pwd`\" >> ~/.dirs; source ~/.dirs ; 
 }
 source ~/.dirs  # Initialization for the above 'save' facility: source the .sdirs file
 shopt -s cdable_vars # set the bash option so that no '$' is required when using the above facility
@@ -173,8 +158,8 @@ alias svhelp='svn help'
 alias svblame='sv blame'
 
 svgetinfo (){
- 	sv info $@
-	sv log $@
+    sv info $@
+    sv log $@
 }
 
 
@@ -221,8 +206,13 @@ alias diff='diff -urN'
 alias showfuncs='typeset'
 alias cdo="eject" #cdo = cd open
 alias cdc="eject -t" #cdc = cd close 
-alias searchbin="ls /{,usr/,usr/local/}bin/*"
 alias servethis="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
+alias mountedinfo='df -hT';
+# Alias chmod commands
+alias mx='chmod a+x'
+alias 000='chmod 000'
+alias 644='chmod 644'
+alias 755='chmod 755'
 
 # Shows most used commands, cool little hack from:
 # http://lifehacker.com/software/how-to/turbocharge-your-terminal-274317.php
@@ -289,6 +279,20 @@ shopt -s extglob #exglob gives better pattern matching
 
 
 # Miscellaneous Functions ------------------------------------------------------
+
+#Needs to be changed to function
+#alias searchbin="ls /{,usr/,usr/local/}bin/*"
+
+# Simple spin function
+spin ()
+{
+    echo -ne "${RED}-"
+    echo -ne "${WHITE}\b|"
+    echo -ne "${BLUE}\bx"
+    sleep .02
+    echo -ne "${RED}\b+${NC}"
+}
+
 # Push ssh authorized_keys to specified server
 pushssh()
 {
@@ -308,6 +312,27 @@ pushdots()
     do
         scp .bash_profile .bash_logout .bashrc .vimrc $USER@$SERVER:
     done
+}
+
+scpsend ()
+{
+    #TODO: build function to simplify copying over files
+    echo ""
+}
+
+netinfo ()
+{
+    echo "--------------- Network Information ---------------"
+    echo -e "`/sbin/ifconfig 2>/dev/null | awk '!/127.0.0.1/ {print}' | \
+              awk '/inet addr/ {print $2}' | \
+              awk -F: '{print \"Net Addr: \"$2}'`"
+    echo -e "`/sbin/ifconfig 2>/dev/null | awk '!/127.0.0.1/ {print}' | \
+              awk '/Bcast/ {print $3}' | \
+              awk -F: '{print \"Broadcast: \"$2}'`"
+    echo -e "`/sbin/ifconfig 2>/dev/null | awk '!/127.0.0.1/ {print}' | \
+              awk '/inet addr/ {print $4}' | \
+              awk -F: '{print \"Netmask: \"$2}'`"
+    # /sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
 }
 
 ##Get Load Average
@@ -392,12 +417,12 @@ function exit() {
 
 # Greps for a running process
 psgrep() {
-	if [ ! -z $1 ] ; then
-		echo "Grepping for processes matching $1..."
-		ps aux | grep $1 | grep -v grep
-	else
-		echo "!! Need name to grep for"
-	fi
+    if [ ! -z $1 ] ; then
+        echo "Grepping for processes matching $1..."
+        ps aux | grep $1 | grep -v grep
+    else
+        echo "!! Need name to grep for"
+    fi
 }
 
 # Finds a files location and greps inside it
@@ -458,24 +483,24 @@ bash_prompt_command() {
 # Extracts files from nearly any archive (like unfoo).
 function extract() {
     echo "Extracting..."
-	if [ -f $1 ]
-	then
-		case $1 in
-			*.tbz2)    tar jpvxf $1 ;;
-			*.tar.bz2) tar jpvxf $1 ;;
-			*.bz2)     bunzip2 $1 ;;
-			*.tar.gz)  tar zvxf $1 ;;
-			*.gz)      gunzip $1 ;;
-			*.tar)     tar vxf $1 ;;
-			*.rar)     unrar x $1 ;;
-			*.zip)     unzip $1 ;;
-			*.Z)       uncompress $1 ;;
-			*.7z)      7z x $1 ;;
-			*)         echo "Don't know how to extract files from '$1'" ;;
-		esac
-	else
-		echo "Usage: extract [filename]"
-	fi
+    if [ -f $1 ]
+    then
+        case $1 in
+            *.tbz2)    tar jpvxf $1 ;;
+            *.tar.bz2) tar jpvxf $1 ;;
+            *.bz2)     bunzip2 $1 ;;
+            *.tar.gz)  tar zvxf $1 ;;
+            *.gz)      gunzip $1 ;;
+            *.tar)     tar vxf $1 ;;
+            *.rar)     unrar x $1 ;;
+            *.zip)     unzip $1 ;;
+            *.Z)       uncompress $1 ;;
+            *.7z)      7z x $1 ;;
+            *)         echo "Don't know how to extract files from '$1'" ;;
+        esac
+    else
+        echo "Usage: extract [filename]"
+    fi
 }
 
 # point dump to extract since it's easier to type
@@ -530,12 +555,59 @@ function xtitle {
 }
 
 
+# Prompts-----------------------------------------------------------------------
+
+function whimsical_motd ()
+{
+    echo -en "${COLOR_WHITE}"; cal ;
+    # Display fortune at login
+    if [ -x /usr/games/fortune ]
+    then
+        echo ""
+        /usr/games/fortune -s
+        echo ""
+    fi
+    #Display the Discordian/Erisian date for the day
+    if [ -x /usr/bin/ddate ]
+    then
+        /usr/bin/ddate
+    fi
+}
+
+function functional_motd ()
+{
+    clear
+    HOSTNAME="`hostname`"
+    WELCOMESTRING="welcome to `hostname`!"
+    SEQLEN="`expr \( 78 - ${#WELCOMESTRING} \) / 2`"
+    for i in `seq 1 $SEQLEN` ; do spin; done
+    echo -ne "${COLOR_WHITE} $WELCOMESTRING ${COLOR_NC}"
+    for i in `seq 1 $SEQLEN` ; do spin; done
+    echo ""
+    echo -ne "${COLOR_LIGHT_GRAY}";netinfo;
+    echo -e "${COLOR_WHITE}--------------- Mounted Disk Info -----------------"
+    echo -ne "${COLOR_WHITE}"
+    mountedinfo
+    #echo -en "${COLOR_WHITE}"; cal ;
+    echo -e "${COLOR_BROWN}Kernel Information: " `uname -smr`;
+    echo -ne "${COLOR_BROWN}Uptime for this computer is ";uptime | awk /'up/ {print $3,$4}'
+    GOODBYESTRING="Hello $USER today is `date`"
+    SEQLEN="`expr \( 78 - ${#GOODBYESTRING} \) / 2`"
+    for i in `seq 1 $SEQLEN`; do spin; done
+    echo -ne "${COLOR_WHITE} ${GOODBYESTRING} ${COLOR_NC}";
+    for i in `seq 1 $SEQLEN`; do spin; done
+    echo "";
+}
+functional_motd #use functional welcome message
+#whimsical_motd #use whimsical welcome message
+
 # Envision Settings ------------------------------------------------------------
-alias te='tail /opt/switchlogs/envision/envision.log'
-alias tef='tail -f /opt/switchlogs/envision/envision.log'
 alias lef='less /opt/switchlogs/envision/envision.log'
+alias log32='tail -f /opt/switchlogs/envision/envision'
+alias llog32='less /opt/switchlogs/envision/envision.log'
 alias s32='cd /opt/switchapps/env_3-2/bin; sudo ../sbin/ss'
 alias k32='cd /opt/switchapps/env_3-2/bin; sudo ../sbin/ks'
+# CDPATH sets the search path for the cd command
 export CDPATH=.:~:/opt/switchlogs:/opt/switchapps:/opt/switchapps/env_3-2
 
 
