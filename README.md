@@ -1,9 +1,10 @@
-
-Base Server Installation
+TURN Server Management Guide
 ---
+
+### Base Server Installation
 An Amazon AMI has been set up in the US West (Oregeon) zone that can be found by searching community images for "rfc5766-turn-server"
 
-This community AMI should be used as a base when launching an EC2 image and includes a fully deployed.  The default credentials it provides are all outlined at http://turnserver.open-sys.org/downloads/v3.2.3.4/turnserver-3.2.3.4-amazon-aws-ec2-x86_64.txt and can be used for initial testing.  Before production use, default users should be removed and the database credentials changed to more secure values.
+This community AMI should be used as a base when launching an EC2 image and includes a fully deployed TURN server.  The default credentials it provides are all outlined at http://turnserver.open-sys.org/downloads/v3.2.3.4/turnserver-3.2.3.4-amazon-aws-ec2-x86_64.txt and can be used for initial testing.  Before production use, default users should be removed and the database credentials changed to more secure values.
 
 Once the AMI instance has been launched, the ports below should be opened to allow communication with TURN server.
 
@@ -17,7 +18,7 @@ UDP 32355-65535
 
 The REST API authentication mechanism needs to be enabled in /etc/turnserver.conf, this can be done by adding "use-auth-secret" to a new line at the bottom of the config file.
 
-Finally, update the realm to your top-level domain name. Something like 'companyname.com' is appropriate.  This realm needs to be stable; updates to the realm used causes invalidation of authentication credentials for all sessions.
+Finally, update the realm to your top-level domain name. Something like 'companyname.com' is appropriate.  This realm needs to be stable; updates to the realm used cause invalidation of authentication credentials for all sessions.
 
 
 Cleaning up the Base Install
@@ -31,8 +32,8 @@ Before going live, the steps below should be performed to remove any possibility
 4. Set the initial shared secret to be used for the TURN server.
 
 
-Managing Users via Redis
----
+###Managing Users via Redis
+
 List all Users for Long-term credentials mechanism:
 ```
 sudo /usr/local/bin/turnadmin -l -N "host=localhost dbname=0 user=turn password=turn"
@@ -71,8 +72,7 @@ sudo /usr/local/bin/turnadmin -D -N "host=localhost dbname=0 user=turn password=
 ```
 
 
-Maintaining Shared Secrets
----
+### Maintaining Shared Secrets
 The shared secrets used by the TURN server and the REST API web service should be set up to change on a set schedule.  Updating shared secrets is what allows authentication credentials to be ephemeral and more difficult to abuse in the scheme.  When the shared secret is changed, existing connections using a given set of credentials are still valid for the time period allotted, but no new allocations will be made by the TURN server.
 
 An example perl script for how to handle shared secret updates has been open sourced by the team who wrote the rfc5766 TURN server.  It is available at https://code.google.com/p/rfc5766-turn-server/source/browse/trunk/examples/scripts/restapi/shared_secret_maintainer.pl
