@@ -1,0 +1,8 @@
+{
+    "todohighlight.isEnable": false,
+    "workbench.tree.indent": 14,
+    "workbench.tree.renderIndentGuides": "always",
+    "workbench.colorCustomizations": {
+        "tree.indentGuidesStroke": "#00ff00"
+    }
+}
