@@ -1,0 +1,50 @@
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+export PATH="$HOME/.local/bin:$PATH"
+
+
+## Aliases
+alias envinfo='npx envinfo'
+alias hostit='npx http-server .'
+alias killport='npx kill-port'
+alias makepretty='npx prettier --write .'
+alias auditcheck='npx audit-check'
+alias audit='npm audit'
+
+## Snippets
+
+# Add key to macos keychain
+# ssh-add --apple-use-keychain ~/.ssh/id_ed25519_signing
+
+## Functions
+# Set the path to your SSH agent socket file
+SSH_ENV="$HOME/.ssh/agent-environment"
+
+function start_agent {
+    echo "Initializing new SSH agent..."
+    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+    chmod 600 "${SSH_ENV}"
+    . "${SSH_ENV}" > /dev/null
+    # Add your ssh keys
+    ssh-add ~/.ssh/id_ed25519 ~/.ssh/id_ed25519_signing
+    ssh-add --apple-load-keychain -q ~/.ssh/id_ed25519_authkey
+}
+
+# Source the environment file if it exists, otherwise start a new agent
+if [ -f "${SSH_ENV}" ]; then
+    . "${SSH_ENV}" > /dev/null
+    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+        start_agent
+    }
+else
+    start_agent
+fi
+
+
+## Initialize the Zsh completion system
+fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
+autoload -Uz compinit
+compinit
+export PATH="$HOME/.local/bin:$PATH"

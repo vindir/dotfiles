@@ -1,0 +1,16 @@
+# Read by the bootstrap script via `include`, never written into $HOME
+Brewfile
+
+# Secrets / private keys — never managed
+.ssh/id_ed25519
+.ssh/id_ed25519.pub
+.ssh/id_ed25519_signing
+.ssh/id_ed25519_signing.pub
+.ssh/id_ed25519_authkey
+.ssh/id_ed25519_authkey.pub
+.ssh/known_hosts*
+.ssh/agent-environment
+.config/gh/hosts.yml
+
+# Editor state, not config
+.config/zed/prompts

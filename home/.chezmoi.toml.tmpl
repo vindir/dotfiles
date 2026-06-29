@@ -1,0 +1,11 @@
+{{- $name  := promptStringOnce . "name"  "Full name for git" -}}
+{{- $email := promptStringOnce . "email" "Git email" -}}
+sourceDir = {{ printf "%s/Documents/dotfiles" .chezmoi.homeDir | quote }}
+
+[data]
+    name  = {{ $name  | quote }}
+    email = {{ $email | quote }}
+
+[git]
+    autoCommit = false
+    autoPush   = false

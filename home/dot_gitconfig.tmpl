@@ -1,0 +1,12 @@
+[gpg]
+	format = ssh
+[user]
+	email = {{ .email }}
+	name = {{ .name }}
+	signingkey = ~/.ssh/id_ed25519_signing.pub
+[commit]
+	gpgsign = true
+[tag]
+	gpgsign = true
+[push]
+	autoSetupRemote = true
